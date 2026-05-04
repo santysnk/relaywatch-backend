@@ -3,6 +3,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UsuariosModule } from './usuarios/usuarios.module';
+import { RegistradoresModule } from './registradores/registradores.module';
+import { ParametrosModule } from './parametros/parametros.module';
+import { RelacionesTransformacionModule } from './relaciones-transformacion/relaciones-transformacion.module';
+import { ConfigRegistradorModule } from './config-registrador/config-registrador.module';
+import { LecturasModule } from './lecturas/lecturas.module';
 
 @Module({
   imports: [
@@ -24,6 +30,12 @@ import { AppService } from './app.service';
         logging: true,           // imprime cada query SQL en consola
       }),
     }),
+    UsuariosModule,
+    RegistradoresModule,
+    ParametrosModule,
+    RelacionesTransformacionModule,
+    ConfigRegistradorModule,
+    LecturasModule,
   ],
   controllers: [AppController],  // controladores HTTP del módulo raíz
   providers: [AppService],       // servicios inyectables del módulo raíz
