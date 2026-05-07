@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ConfigRegistrador } from "../../config-registrador/entities/config-registrador.entity";
 
 
 
@@ -10,5 +11,11 @@ export class RelacionesTransformacion {
     @Column({length: 50})
     relacion!: string;
 
+    @OneToMany(
+        () => ConfigRegistrador, 
+        (configRegistrador) => configRegistrador.relacionTransformacion,
+        {}
+    )
+    configsRegistrador!: ConfigRegistrador[];
     
 }

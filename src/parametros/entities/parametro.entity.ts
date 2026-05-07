@@ -1,5 +1,7 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 import { PrimaryGeneratedColumn } from "typeorm";
+import { ConfigRegistrador } from "../../config-registrador/entities/config-registrador.entity";
+import { Lectura } from "../../lecturas/entities/lectura.entity";
 
 
 
@@ -14,4 +16,18 @@ export class Parametro {
 
     @Column({length: 10})
     unidad!: string;
+
+    @OneToMany(
+        () => ConfigRegistrador, 
+        (configRegistrador) => configRegistrador.parametro,
+        {}
+    )
+    configsRegistrador!: ConfigRegistrador[];
+
+    @OneToMany(
+        () => Lectura,
+        (lectura) => lectura.parametro,
+        {}
+    )
+    lecturas!: Lectura[];
 }
