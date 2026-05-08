@@ -1,4 +1,16 @@
-import { IsBoolean, IsHexColor, IsIn, IsInt, IsOptional, IsString, MaxLength, Min } from "class-validator";
+import { IsArray, IsBoolean, IsHexColor, IsIn, IsInt, IsOptional, IsString, MaxLength, Min, ValidateNested } from "class-validator";
+import { Type } from "class-transformer";
+
+export class ConfigRegistradorItemDto {
+    @IsInt()
+    @Min(1)
+    idParametro!: number;
+
+    @IsOptional()
+    @IsInt()
+    @Min(1)
+    idRelacionTransformacion?: number | null;
+}
 
 export class CreateRegistradorDto {
     @IsString()
@@ -44,4 +56,9 @@ export class CreateRegistradorDto {
     @IsBoolean()
     activo?: boolean;
 
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => ConfigRegistradorItemDto)
+    configs?: ConfigRegistradorItemDto[];
 }

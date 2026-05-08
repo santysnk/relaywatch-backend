@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ConfigRegistradorService } from './config-registrador.service';
-import { ConfigRegistradorController } from './config-registrador.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigRegistrador } from './entities/config-registrador.entity';
+
 
 @Module({
-  controllers: [ConfigRegistradorController],
-  providers: [ConfigRegistradorService],
+  imports: [TypeOrmModule.forFeature([ConfigRegistrador])],
+  controllers: [],
+  providers: [],
 })
 export class ConfigRegistradorModule {}

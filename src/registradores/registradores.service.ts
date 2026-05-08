@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRegistradoreDto } from './dto/create-registradore.dto';
-import { UpdateRegistradoreDto } from './dto/update-registradore.dto';
+import { CreateRegistradorDto } from './dto/create-registradore.dto';
+import { UpdateRegistradorDto } from './dto/update-registradore.dto';
 
 @Injectable()
 export class RegistradoresService {
-  create(createRegistradoreDto: CreateRegistradoreDto) {
+  create(createRegistradorDto: CreateRegistradorDto) {
     return 'This action adds a new registradore';
   }
 
@@ -16,7 +16,7 @@ export class RegistradoresService {
     return `This action returns a #${id} registradore`;
   }
 
-  update(id: number, updateRegistradoreDto: UpdateRegistradoreDto) {
+  update(id: number, updateRegistradorDto: UpdateRegistradorDto) {
     return `This action updates a #${id} registradore`;
   }
 
