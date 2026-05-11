@@ -5,9 +5,9 @@ export class CreateParametroDto {
 
     @IsString()
     @MaxLength(50)
-    nombre!: string;
+    nombre: string;
 
     @IsString()
     @MaxLength(10)
-    unidad!: string;
+    unidad: string;
 }

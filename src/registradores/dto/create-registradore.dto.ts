@@ -4,7 +4,7 @@ import { Type } from "class-transformer";
 export class ConfigRegistradorItemDto {
     @IsInt()
     @Min(1)
-    idParametro!: number;
+    idParametro: number;
 
     @IsOptional()
     @IsInt()
@@ -15,10 +15,10 @@ export class ConfigRegistradorItemDto {
 export class CreateRegistradorDto {
     @IsString()
     @MaxLength(45)
-    nombre!: string;
+    nombre: string;
 
     @IsIn(['rele', 'analizador'])
-    tipo!: 'rele' | 'analizador';
+    tipo: 'rele' | 'analizador';
 
     @IsOptional()
     @IsHexColor()
@@ -26,18 +26,18 @@ export class CreateRegistradorDto {
 
     @IsString()
     @MaxLength(45)
-    ip!: string;
+    ip: string;
 
     @IsInt()
     @Min(1)
-    puerto!: number;
+    puerto: number;
 
     @IsInt()
-    indiceInicial!: number;
+    indiceInicial: number;
 
     @IsInt()
     @Min(1)    
-    cantidadRegistros!: number;
+    cantidadRegistros: number;
     
     @IsOptional()
     @IsInt()    

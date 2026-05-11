@@ -8,6 +8,6 @@ export class CreateRelacionesTransformacionDto {
     @Matches(/^\d+\/\d+$/, {
     message: 'relacion debe tener formato "entero/entero" (ej. "13800/110" o "100/5")',
 })
-    relacion!: string;
+    relacion: string;
 
 }
