@@ -9,6 +9,7 @@ import { ParametrosModule } from './parametros/parametros.module';
 import { RelacionesTransformacionModule } from './relaciones-transformacion/relaciones-transformacion.module';
 import { ConfigRegistradorModule } from './config-registrador/config-registrador.module';
 import { LecturasModule } from './lecturas/lecturas.module';
+import { TitulosPanelesModule } from './titulos-paneles/titulos-paneles.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { LecturasModule } from './lecturas/lecturas.module';
     RelacionesTransformacionModule,
     ConfigRegistradorModule,
     LecturasModule,
+    TitulosPanelesModule,
   ],
   controllers: [AppController],  // controladores HTTP del módulo raíz
   providers: [AppService],       // servicios inyectables del módulo raíz

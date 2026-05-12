@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn,JoinColumn} from "typeorm";
-import { Registrador } from "../../registradores/entities/registradore.entity";
+import { Registrador } from "../../registradores/entities/registrador.entity";
 import { RelacionesTransformacion } from "../../relaciones-transformacion/entities/relaciones-transformacion.entity";
 import { Parametro } from "../../parametros/entities/parametro.entity";     
 
@@ -8,13 +8,13 @@ import { Parametro } from "../../parametros/entities/parametro.entity";
 @Entity('config_registrador')
 export class ConfigRegistrador {
     @PrimaryGeneratedColumn()
-    id!: number;
+    id: number;
 
     @Column({ name: 'id_registrador' })
-    idRegistrador!: number;
+    idRegistrador: number;
 
     @Column({ name: 'id_parametro' })
-    idParametro!: number;
+    idParametro: number;
 
     @Column({ name: 'id_relacion_transformacion', nullable: true })
     idRelacionTransformacion!: number | null;

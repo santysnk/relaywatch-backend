@@ -49,8 +49,18 @@ export class CreateRegistradorDto {
     panelSuperior?: boolean;
 
     @IsOptional()
+    @IsInt()
+    @Min(1)
+    idTituloPanelSuperior?: number;
+
+    @IsOptional()
     @IsBoolean()
     panelInferior?: boolean;
+
+    @IsOptional()   
+    @IsInt()
+    @Min(1)
+    idTituloPanelInferior?: number;
 
     @IsOptional()
     @IsBoolean()

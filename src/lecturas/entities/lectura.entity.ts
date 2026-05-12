@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Registrador } from "../../registradores/entities/registradore.entity";
+import { Registrador } from "../../registradores/entities/registrador.entity";
 import { Parametro } from "../../parametros/entities/parametro.entity";
 
 

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Registrador } from './entities/registradore.entity';
+import { Registrador } from './entities/registrador.entity';
 import { RegistradoresService } from './registradores.service';
 import { RegistradoresController } from './registradores.controller';
 

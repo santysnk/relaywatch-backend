@@ -1,5 +1,4 @@
-import { IsString, MaxLength } from "class-validator";
-
+import { IsInt, IsString, MaxLength, Min } from "class-validator";
 
 export class CreateParametroDto {
 
@@ -10,4 +9,8 @@ export class CreateParametroDto {
     @IsString()
     @MaxLength(10)
     unidad: string;
+
+    @IsInt()
+    @Min(0)
+    indiceParametro: number;
 }
