@@ -6,16 +6,16 @@ import { ConfigRegistrador } from "../../config-registrador/entities/config-regi
 @Entity('relaciones_transformacion')
 export class RelacionesTransformacion {
     @PrimaryGeneratedColumn()
-    id!: number;
+    id: number;
 
     @Column({length: 50})
-    relacion!: string;
+    relacion: string;
 
     @OneToMany(
         () => ConfigRegistrador, 
         (configRegistrador) => configRegistrador.relacionTransformacion,
         {}
     )
-    configsRegistrador!: ConfigRegistrador[];
+    configsRegistrador: ConfigRegistrador[];
     
 }

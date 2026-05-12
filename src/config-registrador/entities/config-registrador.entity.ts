@@ -17,7 +17,7 @@ export class ConfigRegistrador {
     idParametro: number;
 
     @Column({ name: 'id_relacion_transformacion', nullable: true })
-    idRelacionTransformacion!: number | null;
+    idRelacionTransformacion: number | null;
 
 
     @ManyToOne(
@@ -50,7 +50,7 @@ export class ConfigRegistrador {
         }
     )
     @JoinColumn({ name: 'id_relacion_transformacion'})
-    relacionTransformacion!: RelacionesTransformacion | null;
+    relacionTransformacion: RelacionesTransformacion | null;
 }
 
     

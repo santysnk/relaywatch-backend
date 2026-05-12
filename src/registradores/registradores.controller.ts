@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { RegistradoresService } from './registradores.service';
-import { CreateRegistradorDto } from './dto/create-registradore.dto';
-import { UpdateRegistradorDto } from './dto/update-registradore.dto';
+import { CreateRegistradorDto } from './dto/create-registrador.dto';
+import { UpdateRegistradorDto } from './dto/update-registrador.dto';
 
 @Controller('registradores')
 export class RegistradoresController {

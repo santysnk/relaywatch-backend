@@ -1,34 +1,34 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { RelacionesTransformacionService } from './relaciones-transformacion.service';
-import { CreateRelacionesTransformacionDto } from './dto/create-relaciones-transformacion.dto';
-import { UpdateRelacionesTransformacionDto } from './dto/update-relaciones-transformacion.dto';
+import { CreateRelacionTransformacionDto } from './dto/create-relaciones-transformacion.dto';
+import { UpdateRelacionTransformacionDto } from './dto/update-relaciones-transformacion.dto';
 
-@Controller('relaciones-transformacion')
+@Controller('relacion-transformacion')
 export class RelacionesTransformacionController {
-  constructor(private readonly relacionesTransformacionService: RelacionesTransformacionService) {}
+  constructor(private readonly relacionTransformacionService: RelacionesTransformacionService) {}
 
   @Post()
-  create(@Body() createRelacionesTransformacionDto: CreateRelacionesTransformacionDto) {
-    return this.relacionesTransformacionService.create(createRelacionesTransformacionDto);
+  create(@Body() createRelacionTransformacionDto: CreateRelacionTransformacionDto) {
+    return this.create(createRelacionTransformacionDto);
   }
 
   @Get()
   findAll() {
-    return this.relacionesTransformacionService.findAll();
+    return this.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.relacionesTransformacionService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRelacionesTransformacionDto: UpdateRelacionesTransformacionDto) {
-    return this.relacionesTransformacionService.update(+id, updateRelacionesTransformacionDto);
+  update(@Param('id') id: number, @Body() updateRelacionTransformacionDto: UpdateRelacionTransformacionDto) {
+    return this.update(+id, updateRelacionTransformacionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.relacionesTransformacionService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.remove(+id);
   }
 }

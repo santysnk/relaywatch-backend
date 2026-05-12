@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateRelacionesTransformacionDto } from './create-relaciones-transformacion.dto';
+import { CreateRelacionTransformacionDto } from './create-relaciones-transformacion.dto';
 
-export class UpdateRelacionesTransformacionDto extends PartialType(CreateRelacionesTransformacionDto) {}
+export class UpdateRelacionTransformacionDto extends PartialType(CreateRelacionTransformacionDto) {}

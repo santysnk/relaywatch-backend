@@ -1,7 +1,7 @@
 import { IsString, MaxLength, Matches } from "class-validator";
 
 
-export class CreateRelacionesTransformacionDto {
+export class CreateRelacionTransformacionDto {
     
     @IsString()
     @MaxLength(50)

@@ -7,19 +7,19 @@ import { Parametro } from "../../parametros/entities/parametro.entity";
 @Entity('lecturas')
 export class Lectura {
     @PrimaryGeneratedColumn({ type: 'bigint' })
-    id!: string;
+    id: string;
 
     @Column({ name: 'id_registrador' })
-    idRegistrador!: number;
+    idRegistrador: number;
 
     @Column({ name: 'id_parametro' })
-    idParametro!: number;
+    idParametro: number;
 
     @Column({ type: 'decimal', precision: 15, scale: 4 })
-    valor!: string;
+    valor: string;
 
     @CreateDateColumn({ name: 'created_at' })
-    createdAt!: Date;
+    createdAt: Date;
 
     @ManyToOne(
         () => Registrador,
@@ -29,7 +29,7 @@ export class Lectura {
         }
     )
     @JoinColumn({ name: 'id_registrador' })
-    registrador!: Registrador;
+    registrador: Registrador;
 
 
     @ManyToOne(
@@ -40,5 +40,5 @@ export class Lectura {
         }
     )
     @JoinColumn({ name: 'id_parametro' })
-    parametro!: Parametro ;
+    parametro: Parametro ;
 }
