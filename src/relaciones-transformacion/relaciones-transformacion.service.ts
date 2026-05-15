@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRelacionesTransformacionDto } from './dto/create-relaciones-transformacion.dto';
-import { UpdateRelacionesTransformacionDto } from './dto/update-relaciones-transformacion.dto';
+import { CreateRelacionTransformacionDto } from './dto/create-relaciones-transformacion.dto';
+import { UpdateRelacionTransformacionDto } from './dto/update-relaciones-transformacion.dto';
 
 @Injectable()
 export class RelacionesTransformacionService {
-  create(createRelacionesTransformacionDto: CreateRelacionesTransformacionDto) {
+  create(createRelacionTransformacionDto: CreateRelacionTransformacionDto) {
     return 'This action adds a new relacionesTransformacion';
   }
 
@@ -16,7 +16,7 @@ export class RelacionesTransformacionService {
     return `This action returns a #${id} relacionesTransformacion`;
   }
 
-  update(id: number, updateRelacionesTransformacionDto: UpdateRelacionesTransformacionDto) {
+  update(id: number, updateRelacionTransformacionDto: UpdateRelacionTransformacionDto) {
     return `This action updates a #${id} relacionesTransformacion`;
   }
 
