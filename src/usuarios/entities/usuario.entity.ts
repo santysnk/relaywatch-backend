@@ -14,7 +14,7 @@ export class Usuario {
     @Column({length: 255, unique: true})
     email: string;
 
-    @Column({length: 255, name: 'password_hash'})
+    @Column({length: 255, name: 'password_hash', select: false})
     passwordHash: string;
 
     @Column({type: 'enum', enum: ['admin', 'invitado'], default: 'invitado'})

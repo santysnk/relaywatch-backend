@@ -10,12 +10,14 @@ import { RelacionesTransformacionModule } from './relaciones-transformacion/rela
 import { ConfigRegistradorModule } from './config-registrador/config-registrador.module';
 import { LecturasModule } from './lecturas/lecturas.module';
 import { TitulosPanelesModule } from './titulos-paneles/titulos-paneles.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     ConfigModule.forRoot({       // lee el archivo .env
       isGlobal: true,            // disponible en toda la app sin re-importar
     }),
+    ScheduleModule.forRoot(),     // habilita tareas programadas (cron jobs)
     TypeOrmModule.forRootAsync({ // conecta con MySQL usando credenciales del .env
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({

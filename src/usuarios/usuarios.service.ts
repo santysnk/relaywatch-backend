@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, QueryFailedError} from "typeorm";
+import { Repository, QueryFailedError } from "typeorm";
 import * as bcrypt from 'bcrypt';
 import { Usuario } from "./entities/usuario.entity";
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
@@ -38,34 +38,46 @@ export class UsuariosService {
     }
   }
 
-  // ─── FIND ALL ─────────────────────────────────────────────────────
+// ─── FIND ALL ─────────────────────────────────────────────────────
   findAll(): Promise<Usuario[]> {
     return this.usuarioRepo.find();
   }
 
-  // ─── FIND ONE ─────────────────────────────────────────────────────
-  async findOne(id: number): Promise<Usuario> {
-    const usuario = await this.usuarioRepo.findOneBy({ id });
-    if (!usuario) {
-      throw new NotFoundException(`Usuario with id ${id} not found`);
-    }
+// ─── FIND BY EMAIL ─────────────────────────────────────────────────────
+  async findByEmail(email: string): Promise<Usuario | null> {
+    const usuario = await this.usuarioRepo.findOne({
+      where: { email},
+      select: ['id', 'nombre', 'apellido', 'email', 'passwordHash', 'rol' ] 
+    });
+    
     return usuario;
   }
+
+// ─── FIND ONE ─────────────────────────────────────────────────────
+  async findOneBy(id: number): Promise<Usuario> {
+    const usuario = await this.usuarioRepo.findOneBy({ id});
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con id ${id} no encontrado`);
+    }
+
+    return usuario;
+  };
+
 
   // ─── UPDATE ─────────────────────────────────────────────────────
   async update(id: number, updateUsuarioDto: UpdateUsuarioDto): Promise<Usuario> {
     // 1. Verificar que existe (reutilizamos findOne — si no existe, tira 404)
-    const usuario = await this.findOne(id);
+    const usuario = await this.findOneBy(id);
 
     // 2. Si vino password nuevo, re-hashearlo
-    if(updateUsuarioDto.password) {
+    if (updateUsuarioDto.password) {
       usuario.passwordHash = await bcrypt.hash(updateUsuarioDto.password, 10);
     }
 
     // 3. Mergear el resto de campos (excluyendo password que ya manejamos)
     const { password, ...rest } = updateUsuarioDto;
     Object.assign(usuario, rest);
-    
+
     // 4. Guardar con manejo de conflicto por email    
     try {
       return await this.usuarioRepo.save(usuario);
@@ -79,7 +91,7 @@ export class UsuariosService {
 
   // ─── REMOVE ─────────────────────────────────────────────────────
   async remove(id: number): Promise<void> {
-    const usuario = await this.findOne(id);
+    const usuario = await this.findOneBy(id);
     await this.usuarioRepo.remove(usuario);
   }
 }
