@@ -7,9 +7,6 @@ import { Parametro } from '../parametros/entities/parametro.entity';
 import { SimuladorService } from './simulador.service';
 import { LecturasService } from './lecturas.service';
 import { ConfigRegistrador } from '../config-registrador/entities/config-registrador.entity';
-import { config } from 'process';
-
-
 
 @Injectable()
 export class OrquestadorLecturasService {
@@ -29,81 +26,84 @@ export class OrquestadorLecturasService {
 
 
     @Cron(CronExpression.EVERY_MINUTE)
-    async correrCiclo(): Promise<void> {
+    async procesarLecturas(): Promise<void> {
 
         // ─── 1. Traer registradores activos ───────────────────────────
-        const registradoresActivos = await this.registradorRepo.find({
+        const activos = await this.registradorRepo.find({
             where: { activo: true }
         });
 
-        if (registradoresActivos.length === 0) {
-            this.logger.log('No hay registradores activos. Salteamos este ciclo.');
+        if (activos.length === 0) {
+            this.logger.log('No hay registradores activos.');
             return;
-        }        
-
-        for (const registrador of registradoresActivos) {
-            // Traer configs CON la relación de transformación además del parámetro
-            const configs = await this.configRepo.find({
-                where: { idRegistrador: registrador.id },
-                relations: ['parametro', 'parametro.transformacion']
-            });
-        
-        if(configs.length === 0) {
-            this.logger.log(`El registrador ${registrador.nombre} (id: ${registrador.id}) no tiene parámetros configurados.`);
-            continue;
         }
 
-        const todasLasLecturas: Array<{
-            idRegistrador: number;
-            idParametro: number;
-            valor: number;
-        }> = [];
+        for (const registrador of activos) {
+            try {
+                await this.procesarRegistrador(registrador);
+            } catch (error: any) {
+                this.logger.error(`Error al procesar registrador ${registrador.id}: ${error.message}`);
+            }
+        }
+    };
 
-        // El simulador devuelve los valores CRUDOS sin transformar.
-        const valoresSimulados = await this.simulador.generarValores({
+    private async procesarRegistrador(registrador: Registrador): Promise<void> {
+        const valoresCrudos = await this.simulador.generarValores({
             ip: registrador.ip,
             puerto: registrador.puerto,
             indiceInicial: registrador.indiceInicial,
-            cantidadRegistros: registrador.cantidadRegistros
+            cantidadRegistros: registrador.cantidadRegistros,
         });
 
-        // Por cada config, tomar el crudo en su índice y aplicar la transformación
-        for (const config of configs) {
-            const indice = config.parametro.indiceParametro;
+        const config = await this.configRepo.find({
+            where: { idRegistrador: registrador.id },
+            relations: ['parametro', 'relacionTransformacion'],
+        });
 
-            if (indice >= valoresSimulados.length) {
-                this.logger.log(``);
-                continue;
-            }
+        const lecturas = config
+            .map((config) => {
+                const posicion = config.parametro.indiceParametro - 1; // Ajuste a índice 0-based
 
+                if (posicion < 0 || posicion >= valoresCrudos.length) {
+                    this.logger.log(`Parámetro ${config.parametro.indiceParametro} (dir: ${config.parametro.indiceParametro}) fuera de rango para registrador ${registrador.nombre}`);
+                    return null;
+                }
 
+                const valorSecundario = valoresCrudos[posicion];
+                const valorReal = this.aplicarTransformacion(
+                    valorSecundario,
+                    config.relacionTransformacion,
+                );
 
+                return {
+                    idRegistrador: registrador.id,
+                    idParametro: config.parametro.id,
+                    valor: valorReal,
+                };
+            })
+            .filter((l): l is NonNullable<typeof l> => l !== null);
 
-
-
-
-
-
-
-
-
-
-            // ─── 2. Traer todos los parámetros, ordenados por indice_parametro ────
-            // El orden ASC asegura: parametros[0] → indice=0, parametros[1] → indice=1, etc.
-            // Esto se alinea con el array que devuelve el simulador (posición i = indice_parametro i).
-            const parametros = await this.parametroRepo.find({
-                order: { indiceParametro: 'ASC' }
-            });
-
-
-
-            // ─── 3. Recorrer cada registrador y armar sus lecturas ────────────
-
-
-
-            // ─── 4. Persistir todas las lecturas en un solo INSERT ────────────
-
+        if (lecturas.length > 0) {
+            await this.lecturasService.crearMuchas(lecturas);
+            this.logger.log(${ registrador.nombre }: ${ lecturas.length } lecturas guardadas);
         }
     }
-};
+
+    private aplicarTransformacion(
+        valor: number,
+        relacion: RelacionTransformacion | null,
+    ): number {
+        if (!relacion) return valor;
+
+        const [primario, secundario] = relacion.relacion.split('/').map(Number);
+        if (isNaN(primario) || isNaN(secundario) || secundario === 0) {
+            this.logger.warn(Relación de transformación inválida: "${relacion.relacion}");
+            return valor;
+        }
+
+        return Math.round((valor * (primario / secundario)) * 10000) / 10000;
+    }
+}
+
+
 
