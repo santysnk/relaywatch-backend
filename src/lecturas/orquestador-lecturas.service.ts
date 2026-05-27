@@ -3,7 +3,6 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Registrador } from '../registradores/entities/registrador.entity';
-import { Parametro } from '../parametros/entities/parametro.entity';
 import { SimuladorService } from './simulador.service';
 import { LecturasService } from './lecturas.service';
 import { ConfigRegistrador } from '../config-registrador/entities/config-registrador.entity';
@@ -65,7 +64,7 @@ export class OrquestadorLecturasService {
                 const posicion = config.parametro.indiceParametro - 1; // Ajuste a índice 0-based
 
                 if (posicion < 0 || posicion >= valoresCrudos.length) {
-                    this.logger.log(`Parámetro ${config.parametro.indiceParametro} (dir: ${config.parametro.indiceParametro}) fuera de rango para registrador ${registrador.nombre}`);
+                    this.logger.log(`Parámetro ${config.parametro.nombre} (dir: ${config.parametro.indiceParametro}) fuera de rango para registrador ${registrador.nombre}`);
                     return null;
                 }
 
@@ -84,7 +83,7 @@ export class OrquestadorLecturasService {
             .filter((l): l is NonNullable<typeof l> => l !== null);
 
         if (lecturas.length > 0) {
-            await this.lecturasService.crearMuchas(lecturas);
+            await this.lecturasService.crearLecturas(lecturas);
             this.logger.log(`${ registrador.nombre }: ${ lecturas.length } lecturas guardadas`);
         }
     }

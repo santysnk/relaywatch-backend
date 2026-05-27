@@ -1,34 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLecturaDto } from './dto/create-lectura.dto';
-import { UpdateLecturaDto } from './dto/update-lectura.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Lectura } from './entities/lectura.entity';
+
+
 
 @Injectable()
 export class LecturasService {
 
-  // ─── CREATE ─────────────────────────────────────────────────────
-  create(createLecturaDto: CreateLecturaDto) {
-    return 'This action adds a new lectura';
-  }
+  constructor(
+    @InjectRepository(Lectura)
+    private readonly lecturasRepo: Repository<Lectura>
+  ) { }
 
-  // ─── FIND ALL ─────────────────────────────────────────────────────
-  findAll() {
-    return `This action returns all lecturas`;
-  }
-
-  // ─── FIND ONE ─────────────────────────────────────────────────────
-
-  findOne(id: number) {
-    return `This action returns a #${id} lectura`;
-  }
-  // ─── UPDATE ─────────────────────────────────────────────────────
-
-  update(id: number, updateLecturaDto: UpdateLecturaDto) {
-    return `This action updates a #${id} lectura`;
-  }
-
-  // ─── REMOVE ─────────────────────────────────────────────────────
-
-  remove(id: number) {
-    return `This action removes a #${id} lectura`;
+  //Crea una o mas lecturas en una sola operacion.
+  //Se llama desde el OrquestadorLecturasService cada N Segundos.
+  async crearLecturas(lecturas: Array<{ idRegistrador: number; idParametro: number; valor: number }>): Promise<Lectura[]> {
+    const nuevaLectura = this.lecturasRepo.create(
+      lecturas.map(
+        (L) => ({
+          idRegistrador: L.idRegistrador,
+          idParametro: L.idParametro,
+          valor: L.valor.toString(),
+        })
+      )
+    )
+        return this.lecturasRepo.save(nuevaLectura);
   }
 }
