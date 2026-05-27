@@ -7,7 +7,7 @@ import { Parametro } from '../parametros/entities/parametro.entity';
 import { SimuladorService } from './simulador.service';
 import { LecturasService } from './lecturas.service';
 import { ConfigRegistrador } from '../config-registrador/entities/config-registrador.entity';
-
+import { RelacionesTransformacion } from '../relaciones-transformacion/entities/relaciones-transformacion.entity';
 @Injectable()
 export class OrquestadorLecturasService {
 
@@ -85,19 +85,19 @@ export class OrquestadorLecturasService {
 
         if (lecturas.length > 0) {
             await this.lecturasService.crearMuchas(lecturas);
-            this.logger.log(${ registrador.nombre }: ${ lecturas.length } lecturas guardadas);
+            this.logger.log(`${ registrador.nombre }: ${ lecturas.length } lecturas guardadas`);
         }
     }
 
     private aplicarTransformacion(
         valor: number,
-        relacion: RelacionTransformacion | null,
+        relacion: RelacionesTransformacion | null,
     ): number {
         if (!relacion) return valor;
 
         const [primario, secundario] = relacion.relacion.split('/').map(Number);
         if (isNaN(primario) || isNaN(secundario) || secundario === 0) {
-            this.logger.warn(Relación de transformación inválida: "${relacion.relacion}");
+            this.logger.log(`Relación de transformación inválida: "${relacion.relacion}"`);
             return valor;
         }
 
