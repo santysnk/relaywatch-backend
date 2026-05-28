@@ -11,6 +11,7 @@ import { ConfigRegistradorModule } from './config-registrador/config-registrador
 import { LecturasModule } from './lecturas/lecturas.module';
 import { TitulosPanelesModule } from './titulos-paneles/titulos-paneles.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ConfigRegistradorModule,
     LecturasModule,
     TitulosPanelesModule,
+    AuthModule,
   ],
   controllers: [AppController],  // controladores HTTP del módulo raíz
   providers: [AppService],       // servicios inyectables del módulo raíz
