@@ -16,7 +16,7 @@ export class LecturasService {
   //Crea una o mas lecturas en una sola operacion.
   //Se llama desde el OrquestadorLecturasService cada N Segundos.
   async crearLecturas(lecturas: Array<{ idRegistrador: number; idParametro: number; valor: number }>): Promise<Lectura[]> {
-    const nuevaLectura = this.lecturasRepo.create(
+    const nuevasLecturas = this.lecturasRepo.create(
       lecturas.map(
         (L) => ({
           idRegistrador: L.idRegistrador,
@@ -25,6 +25,6 @@ export class LecturasService {
         })
       )
     )
-        return this.lecturasRepo.save(nuevaLectura);
+        return this.lecturasRepo.save(nuevasLecturas);
   }
 }
