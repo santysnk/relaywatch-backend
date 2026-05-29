@@ -1,9 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe, Delete, UseGuards } from '@nestjs/common';
 import { ParametrosService } from './parametros.service';
 import { CreateParametroDto } from './dto/create-parametro.dto';
 import { UpdateParametroDto } from './dto/update-parametro.dto';
+import { Roles } from '../auth/decorators/roles.decorador';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('parametros')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin')  
 export class ParametrosController {
   constructor(private readonly parametrosService: ParametrosService) {}
 
@@ -18,17 +23,17 @@ export class ParametrosController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.parametrosService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.parametrosService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateParametroDto: UpdateParametroDto) {
-    return this.parametrosService.update(+id, updateParametroDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateParametroDto: UpdateParametroDto) {
+    return this.parametrosService.update(id, updateParametroDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.parametrosService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.parametrosService.remove(id);
   }
 }

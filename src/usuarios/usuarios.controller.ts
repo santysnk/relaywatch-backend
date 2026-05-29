@@ -1,36 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';      
+import { Roles } from '../auth/decorators/roles.decorador';
 
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
-  @Post()
-  create(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuariosService.create(createUsuarioDto);
-  }
-
+  // Solo admin puede ver la lista completa de usuarios
   @Get()
-  @UseGuards(JwtAuthGuard) 
+  @UseGuards(JwtAuthGuard, RolesGuard)   
+  @Roles('admin')
   findAll() {
     return this.usuariosService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usuariosService.findOneBy(+id);
+  // Cualquier logueado ve SU propio perfil
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  findMe(@Req() req) {
+    return this.usuariosService.findOneBy(req.user.id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuariosService.update(+id, updateUsuarioDto);
+  // Cualquier logueado edita SUS propios datos
+  @Patch('me')
+  @UseGuards(JwtAuthGuard)
+  updateMe(@Req() req, @Body() dto: UpdateUsuarioDto) {
+    return this.usuariosService.update(req.user.id, dto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usuariosService.remove(+id);
+  // Cualquier logueado borra SU propia cuenta
+  @Delete('me')
+  @UseGuards(JwtAuthGuard)
+  removeMe(@Req() req) {
+    return this.usuariosService.remove(req.user.id);
   }
 }

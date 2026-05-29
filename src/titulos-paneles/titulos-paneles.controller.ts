@@ -1,15 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  ParseIntPipe,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { TitulosPanelesService } from './titulos-paneles.service';
 import { CreateTituloPanelDto } from './dto/create-titulo-panel.dto';
 import { UpdateTituloPanelDto } from './dto/update-titulo-panel.dto';
+import { Roles } from '../auth/decorators/roles.decorador';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('titulos-paneles')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin')                          
 export class TitulosPanelesController {
   constructor(private readonly titulosPanelesService: TitulosPanelesService) {}
 
   @Post()
-  create(@Body() createTituloPanelDto: CreateTituloPanelDto) {
-    return this.titulosPanelesService.create(createTituloPanelDto);
+  create(@Body() dto: CreateTituloPanelDto) {
+    return this.titulosPanelesService.create(dto);
   }
 
   @Get()
@@ -17,18 +32,13 @@ export class TitulosPanelesController {
     return this.titulosPanelesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.titulosPanelesService.findOne(+id);
-  }
-
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTituloPanelDto: UpdateTituloPanelDto) {
-    return this.titulosPanelesService.update(+id, updateTituloPanelDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateTituloPanelDto) {
+    return this.titulosPanelesService.update(id, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.titulosPanelesService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.titulosPanelesService.remove(id);
   }
 }
