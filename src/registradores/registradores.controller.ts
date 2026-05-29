@@ -1,9 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,  
+} from '@nestjs/common';
 import { RegistradoresService } from './registradores.service';
 import { CreateRegistradorDto } from './dto/create-registrador.dto';
 import { UpdateRegistradorDto } from './dto/update-registrador.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+
 
 @Controller('registradores')
+@UseGuards(JwtAuthGuard)
 export class RegistradoresController {
   constructor(private readonly registradoresService: RegistradoresService) {}
 
@@ -23,7 +35,10 @@ export class RegistradoresController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRegistradorDto: UpdateRegistradorDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateRegistradorDto: UpdateRegistradorDto,
+  ) {
     return this.registradoresService.update(+id, updateRegistradorDto);
   }
 
