@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TituloPanel } from './entities/titulo-panel.entity';
+import { Registrador } from '../registradores/entities/registrador.entity';
 import { TitulosPanelesService } from './titulos-paneles.service';
 import { TitulosPanelesController } from './titulos-paneles.controller';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TituloPanel])],
+  imports: [TypeOrmModule.forFeature([TituloPanel, Registrador])],
   controllers: [TitulosPanelesController],
   providers: [TitulosPanelesService],
 })

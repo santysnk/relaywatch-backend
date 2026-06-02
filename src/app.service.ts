@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  // Estado básico de la API. Se usa como health-check.
+  getEstado() {
+    return {
+      servicio: 'relaywatch-backend',
+      estado: 'ok',
+      uptimeSegundos: Math.floor(process.uptime()),
+    };
   }
 }

@@ -1,26 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { RelacionesTransformacion } from './entities/relaciones-transformacion.entity';
 import { CreateRelacionTransformacionDto } from './dto/create-relaciones-transformacion.dto';
 import { UpdateRelacionTransformacionDto } from './dto/update-relaciones-transformacion.dto';
 
 @Injectable()
 export class RelacionesTransformacionService {
-  create(createRelacionTransformacionDto: CreateRelacionTransformacionDto) {
-    return 'This action adds a new relacionesTransformacion';
+  constructor(
+    @InjectRepository(RelacionesTransformacion)
+    private readonly relacionRepo: Repository<RelacionesTransformacion>,
+  ) {}
+
+  // ─── CREATE ──────────────────────────────────────────────────
+  create(
+    dto: CreateRelacionTransformacionDto,
+  ): Promise<RelacionesTransformacion> {
+    const relacion = this.relacionRepo.create(dto);
+    return this.relacionRepo.save(relacion);
   }
 
-  findAll() {
-    return `This action returns all relacionesTransformacion`;
+  // ─── FIND ALL ────────────────────────────────────────────────
+  findAll(): Promise<RelacionesTransformacion[]> {
+    return this.relacionRepo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} relacionesTransformacion`;
+  // ─── FIND ONE ────────────────────────────────────────────────
+  async findOne(id: number): Promise<RelacionesTransformacion> {
+    const relacion = await this.relacionRepo.findOneBy({ id });
+    if (!relacion) {
+      throw new NotFoundException(
+        `Relación de transformación con id ${id} no encontrada`,
+      );
+    }
+    return relacion;
   }
 
-  update(id: number, updateRelacionTransformacionDto: UpdateRelacionTransformacionDto) {
-    return `This action updates a #${id} relacionesTransformacion`;
+  // ─── UPDATE ──────────────────────────────────────────────────
+  async update(
+    id: number,
+    dto: UpdateRelacionTransformacionDto,
+  ): Promise<RelacionesTransformacion> {
+    const relacion = await this.findOne(id); // 404 si no existe
+    Object.assign(relacion, dto);
+    return this.relacionRepo.save(relacion);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} relacionesTransformacion`;
+  // ─── REMOVE ──────────────────────────────────────────────────
+  async remove(id: number): Promise<void> {
+    const relacion = await this.findOne(id); // 404 si no existe
+    // La FK en config_registrador es ON DELETE SET NULL: si algún config la
+    // usaba, queda con relación nula (no bloquea el borrado).
+    await this.relacionRepo.remove(relacion);
   }
 }
