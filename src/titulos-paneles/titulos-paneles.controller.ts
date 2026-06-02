@@ -12,10 +12,13 @@ import {
 import { TitulosPanelesService } from './titulos-paneles.service';
 import { CreateTituloPanelDto } from './dto/create-titulo-panel.dto';
 import { UpdateTituloPanelDto } from './dto/update-titulo-panel.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from '../auth/decorators/roles.decorador';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
+@ApiTags('titulos-paneles')
+@ApiBearerAuth()
 @Controller('titulos-paneles')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')                          

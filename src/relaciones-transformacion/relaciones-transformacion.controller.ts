@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe, Delete, UseGua
 import { RelacionesTransformacionService } from './relaciones-transformacion.service';
 import { CreateRelacionTransformacionDto } from './dto/create-relaciones-transformacion.dto';
 import { UpdateRelacionTransformacionDto } from './dto/update-relaciones-transformacion.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from '../auth/decorators/roles.decorador';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
+@ApiTags('relaciones-transformacion')
+@ApiBearerAuth()
 @Controller('relaciones-transformacion')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')  

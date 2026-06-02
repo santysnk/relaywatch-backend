@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe, Delete, UseGua
 import { ParametrosService } from './parametros.service';
 import { CreateParametroDto } from './dto/create-parametro.dto';
 import { UpdateParametroDto } from './dto/update-parametro.dto';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from '../auth/decorators/roles.decorador';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
+@ApiTags('parametros')
+@ApiBearerAuth()
 @Controller('parametros')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')  

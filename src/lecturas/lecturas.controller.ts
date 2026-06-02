@@ -1,8 +1,11 @@
 import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { LecturasService } from './lecturas.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 
+@ApiTags('lecturas')
+@ApiBearerAuth()
 @Controller('lecturas')
 @UseGuards(JwtAuthGuard) 
 export class LecturasController {
