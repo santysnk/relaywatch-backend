@@ -19,6 +19,12 @@ export class ConfigRegistrador {
     @Column({ name: 'id_relacion_transformacion', nullable: true })
     idRelacionTransformacion: number | null;
 
+    @Column({ type: 'enum', enum: ['superior', 'inferior'], default: 'superior' })
+    panel: 'superior' | 'inferior';
+
+    @Column({ default: 0 })
+    orden: number;
+
 
     @ManyToOne(
         () => Registrador,

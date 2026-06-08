@@ -46,6 +46,8 @@ export class RegistradoresService {
           idRegistrador: guardado.id,
           idParametro: c.idParametro,
           idRelacionTransformacion: c.idRelacionTransformacion ?? null,
+          panel: c.panel ?? 'superior',
+          orden: c.orden ?? 0,
         })),
       );
       await this.configRepo.save(entidadesConfig);
@@ -92,6 +94,8 @@ export class RegistradoresService {
             idRegistrador: id,
             idParametro: c.idParametro,
             idRelacionTransformacion: c.idRelacionTransformacion ?? null,
+            panel: c.panel ?? 'superior',
+            orden: c.orden ?? 0,
           })),
         );
         await this.configRepo.save(entidadesConfig);

@@ -28,6 +28,21 @@ export class ConfigRegistradorItemDto {
   @IsInt()
   @Min(1)
   idRelacionTransformacion?: number | null;
+
+  @ApiPropertyOptional({
+    enum: ['superior', 'inferior'],
+    default: 'superior',
+    description: 'Panel de la tarjeta donde se muestra el parámetro',
+  })
+  @IsOptional()
+  @IsIn(['superior', 'inferior'])
+  panel?: 'superior' | 'inferior';
+
+  @ApiPropertyOptional({ example: 0, default: 0, description: 'Posición dentro del panel' })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  orden?: number;
 }
 
 export class CreateRegistradorDto {

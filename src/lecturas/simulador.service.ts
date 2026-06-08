@@ -18,8 +18,8 @@ export class SimuladorService {
     // no del dominio real (en producción los valores vendrían del hardware).
     private readonly TENSION_MIN = 12.9;   // kV
     private readonly TENSION_MAX = 13.8;   // kV
-    private readonly CORRIENTE_MIN = 0.2;   // A
-    private readonly CORRIENTE_MAX = 0.8;   // A
+    private readonly CORRIENTE_MIN = 5.2;   // A
+    private readonly CORRIENTE_MAX = 5.8;   // A
 
     // Direcciones Modbus del REF615 (1-based, igual que en el manual ABB)
     // En el array las accedemos como (dirección - 1)
