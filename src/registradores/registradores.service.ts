@@ -82,6 +82,14 @@ export class RegistradoresService {
 
     // 1. Actualizar los campos propios del registrador
     Object.assign(registrador, datosRegistrador);
+
+    // El registrador vino con las relaciones de título cargadas (objetos viejos).
+    // Al guardar, TypeORM usaría esos objetos para la FK y pisaría el id que
+    // acabamos de asignar. Los quitamos para que se respeten
+    // idTituloPanelSuperior / idTituloPanelInferior.
+    delete (registrador as any).tituloPanelSuperior;
+    delete (registrador as any).tituloPanelInferior;
+
     await this.guardarConManejoDeError(registrador);
 
     // 2. Si mandaron configs, reemplazamos los anteriores por los nuevos
