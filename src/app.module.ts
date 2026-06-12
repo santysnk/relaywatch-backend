@@ -31,7 +31,13 @@ import { AuthModule } from './auth/auth.module';
         entities: [],            // se completa al crear las entidades
         autoLoadEntities: true,  // detecta entidades registradas en otros módulos
         synchronize: false,      // TypeORM no toca el schema (lo maneja schema.sql)
-        logging: true,           // imprime cada query SQL en consola
+        // Logs de queries solo en desarrollo (en producción ensucian y pesan)
+        logging: process.env.NODE_ENV !== 'production',
+        // El plan gratuito de filess.io limita las conexiones simultáneas.
+        // Un pool chico evita el error "too many connections" al arrancar.
+        extra: {
+          connectionLimit: 3,
+        },
       }),
     }),
     UsuariosModule,
