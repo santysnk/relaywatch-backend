@@ -79,7 +79,21 @@ Todos requieren JWT (`Authorization: Bearer <token>`) salvo el registro y el log
 | Catálogos 🔒 | `/parametros` · `/relaciones-transformacion` · `/titulos-paneles` | CRUD de magnitudes, relaciones TT/TC y títulos de panel |
 | Lecturas | `GET /lecturas/registrador/:id/ultimas` | Última lectura de cada parámetro del equipo |
 
-El detalle completo (cuerpos, validaciones, respuestas) está en Swagger.
+El detalle completo de cada endpoint (cuerpos, validaciones, respuestas y códigos de estado) está documentado en Swagger ⬇️.
+
+## API Docs — Swagger
+
+**[📖 Documentación interactiva en producción](https://relaywatch-backend.onrender.com/api)** · en local: `http://localhost:3000/api`
+
+**¿Qué es?** [Swagger](https://swagger.io/) (estándar **OpenAPI**) genera documentación **interactiva** de una API REST. NestJS la integra con `@nestjs/swagger`: a partir de los controladores, los DTOs y unos decoradores (`@ApiTags`, `@ApiProperty`, `@ApiBearerAuth`), arma una página web con **todos los endpoints**, sus parámetros, el cuerpo que esperan, las respuestas posibles y sus códigos de estado.
+
+**¿Por qué lo usamos?**
+- 📄 **Se documenta sola y nunca queda desactualizada**: la doc se genera del código, así que siempre refleja la implementación real (a diferencia de un documento escrito a mano).
+- 🧪 **Se prueba desde el navegador**: cada endpoint tiene un botón *"Try it out"* para mandar requests reales, sin necesidad de Postman ni Thunder Client.
+- 🔑 **Rutas protegidas**: el botón **"Authorize"** permite pegar el token JWT (el que devuelve `POST /auth/login`) y probar los endpoints que requieren sesión o rol admin.
+- ✅ Cubre el entregable **"API Docs"** del TP: documentación detallada de los endpoints, accesible desde una URL.
+
+> ⏳ El backend está en el plan gratuito de Render: si estuvo inactivo, la primera carga puede tardar ~50 s en "despertar". Después responde normal.
 
 ## Modelo de datos
 
