@@ -99,6 +99,8 @@ El detalle completo de cada endpoint (cuerpos, validaciones, respuestas y códig
 
 📊 **[Diagrama interactivo de la base de datos](https://dbdiagram.io/d/6a2c2d735c789b8acb71fec2)** (dbdiagram.io) · Script completo en [`database/schema.sql`](database/schema.sql).
 
+> 🛠️ **Sobre cómo se crean las tablas**: las entidades y sus relaciones están modeladas con TypeORM, pero las tablas las creamos nosotros con el script `schema.sql` (usamos `synchronize: false`). Decidimos hacerlo así para tener el control de la estructura: con `synchronize: true`, TypeORM modifica la base automáticamente cada vez que se cambia una entidad, y puede llegar a borrar columnas o datos sin avisar. Con el script sabemos exactamente qué se crea y qué datos iniciales se cargan.
+
 Las tablas principales:
 
 - **usuarios** — cuentas con rol (`admin` / `invitado`).
