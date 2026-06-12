@@ -83,7 +83,9 @@ El detalle completo (cuerpos, validaciones, respuestas) está en Swagger.
 
 ## Modelo de datos
 
-Script completo en [`database/schema.sql`](database/schema.sql). Las tablas principales:
+📊 **[Diagrama interactivo de la base de datos](https://dbdiagram.io/d/6a2c2d735c789b8acb71fec2)** (dbdiagram.io) · Script completo en [`database/schema.sql`](database/schema.sql).
+
+Las tablas principales:
 
 - **usuarios** — cuentas con rol (`admin` / `invitado`).
 - **registradores** — los equipos: IP, puerto, bloque de registros Modbus a leer, período de muestreo, paneles de visualización y flag `activo` (si el orquestador le genera lecturas). Soft delete vía `deleted_at`.
