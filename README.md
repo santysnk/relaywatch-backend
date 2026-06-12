@@ -1,98 +1,101 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# RelayWatch — Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST para el monitoreo de **registradores eléctricos** (relés de protección y analizadores de red). Permite dar de alta equipos, configurar qué magnitudes mide cada uno (tensiones, corrientes, etc.), y generar/consultar sus lecturas periódicas.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Trabajo Práctico final del curso Full Stack — desarrollado por **Santiago** y **Vanina**.
 
-## Description
+> 🖥️ El cliente web está en su propio repositorio: [relaywatch-frontend](https://github.com/santysnk/relaywatch-frontend)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## Arquitectura
 
-```bash
-$ npm install
+```
+┌──────────────┐      HTTP/JSON       ┌──────────────┐      TypeORM       ┌─────────┐
+│   Frontend   │  ─────────────────▶  │   Backend    │  ───────────────▶  │  MySQL  │
+│ React + Vite │  ◀─────────────────  │    NestJS    │  ◀───────────────  │         │
+└──────────────┘    JWT en headers    └──────────────┘                    └─────────┘
+                                            │
+                                      ┌─────┴──────┐
+                                      │ Orquestador │  cron (cada 1 min): lee los
+                                      │ + Simulador │  registradores activos y les
+                                      └────────────┘  genera lecturas realistas
 ```
 
-## Compile and run the project
+- **NestJS + TypeORM + MySQL**, validación con `class-validator`, documentación con **Swagger**.
+- **Auth con JWT** y dos roles: `admin` (gestiona equipos y catálogos) e `invitado` (solo visualiza).
+- **Simulador Modbus**: en lugar de conectarse a un relé real (ABB REF615), un servicio genera valores realistas en las mismas direcciones de registro que usa el equipo físico. El **orquestador** corre por cron cada minuto, procesa los registradores activos y aplica las relaciones de transformación (TT/TC) antes de guardar.
+- **Soft delete de registradores**: eliminar un equipo no borra su histórico de lecturas (columna `deleted_at`); se puede restaurar desde la papelera.
+
+## Requisitos
+
+- [Node.js](https://nodejs.org/) 20+
+- [MySQL](https://dev.mysql.com/downloads/) 8+ (probado también con 9.x)
+
+## Puesta en marcha
 
 ```bash
-# development
-$ npm run start
+# 1. Clonar e instalar dependencias
+git clone https://github.com/santysnk/relaywatch-backend.git
+cd relaywatch-backend
+npm install
 
-# watch mode
-$ npm run start:dev
+# 2. Crear la base de datos (desde MySQL Workbench o consola):
+#    ejecutar el script database/schema.sql
+#    → crea la base "relaywatch", todas las tablas y los datos iniciales
 
-# production mode
-$ npm run start:prod
+# 3. Configurar variables de entorno
+#    copiar .env.example a .env y completar (password de MySQL, secreto JWT)
+
+# 4. Levantar en modo desarrollo (recompila al guardar)
+npm run start:dev
 ```
 
-## Run tests
+La API queda en `http://localhost:3000` y la documentación interactiva (Swagger) en **`http://localhost:3000/api`**.
 
-```bash
-# unit tests
-$ npm run test
+### Usuario inicial
 
-# e2e tests
-$ npm run test:e2e
+El `schema.sql` crea un administrador para poder entrar la primera vez:
 
-# test coverage
-$ npm run test:cov
-```
+| Email | Contraseña | Rol |
+|---|---|---|
+| `admin@relaywatch.com` | `12345678` | admin |
 
-## Deployment
+Los usuarios que se registran desde la app nacen con rol `invitado`.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+> ⚠️ Credenciales de desarrollo para uso académico. En un despliegue real, el seed del admin se reemplaza por un proceso seguro de bootstrap.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Endpoints
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+Todos requieren JWT (`Authorization: Bearer <token>`) salvo el registro y el login. Los marcados 🔒 son solo para rol `admin`.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+| Módulo | Ruta | Descripción |
+|---|---|---|
+| Auth | `POST /auth/register` · `POST /auth/login` | Alta de usuario y login (devuelve el JWT) |
+| Usuarios | `GET/PATCH/DELETE /usuarios/me` · 🔒 `GET /usuarios` | Perfil propio · listado completo |
+| Registradores | `GET /registradores` · `GET /registradores/:id` | Equipos con su configuración completa |
+| | 🔒 `POST` · `PATCH /:id` · `DELETE /:id` | Alta, edición y baja **lógica** (soft delete) |
+| | 🔒 `GET /registradores/eliminados` · `PATCH /:id/restaurar` | Papelera: listar eliminados y restaurar |
+| Catálogos 🔒 | `/parametros` · `/relaciones-transformacion` · `/titulos-paneles` | CRUD de magnitudes, relaciones TT/TC y títulos de panel |
+| Lecturas | `GET /lecturas/registrador/:id/ultimas` | Última lectura de cada parámetro del equipo |
 
-## Resources
+El detalle completo (cuerpos, validaciones, respuestas) está en Swagger.
 
-Check out a few resources that may come in handy when working with NestJS:
+## Modelo de datos
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Script completo en [`database/schema.sql`](database/schema.sql). Las tablas principales:
 
-## Support
+- **usuarios** — cuentas con rol (`admin` / `invitado`).
+- **registradores** — los equipos: IP, puerto, bloque de registros Modbus a leer, período de muestreo, paneles de visualización y flag `activo` (si el orquestador le genera lecturas). Soft delete vía `deleted_at`.
+- **parametros** — catálogo de magnitudes medibles (nombre, unidad, dirección Modbus en el REF615).
+- **relaciones_transformacion** — relaciones de TT/TC con formato `primario/secundario` (ej. `13800/110`).
+- **config_registrador** — qué parámetros mide cada registrador, con su relación de transformación, panel (superior/inferior) y orden. Máximo 3 por panel.
+- **lecturas** — el histórico de mediciones (valor + timestamp). Se conserva aunque el registrador se elimine.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Reglas de negocio destacadas
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- La validación de entrada es global (`ValidationPipe` con whitelist): los campos no declarados en los DTOs se rechazan.
+- El título de panel `id=1` ("Sin determinar") es el default del sistema: no puede editarse ni borrarse; al borrar otro título, los registradores que lo usaban vuelven al default.
+- Un parámetro **en uso** (por una configuración o una lectura) no puede eliminarse.
+- Máximo **3 parámetros por panel** por registrador (validado también en el cliente).
+- CORS restringido al origen del frontend (`FRONTEND_URL`).
