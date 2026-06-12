@@ -2,7 +2,7 @@
 
 API REST para el monitoreo de **registradores eléctricos** (relés de protección y analizadores de red). Permite dar de alta equipos, configurar qué magnitudes mide cada uno (tensiones, corrientes, etc.), y generar/consultar sus lecturas periódicas.
 
-Trabajo Práctico final del curso Full Stack — desarrollado por **Santiago** y **Vanina**.
+Trabajo Práctico final del curso Full Stack — desarrollado por **Santiago Casal** y **Vanina Labrunee**.
 
 > 🖥️ El cliente web está en su propio repositorio: [relaywatch-frontend](https://github.com/santysnk/relaywatch-frontend)
 
