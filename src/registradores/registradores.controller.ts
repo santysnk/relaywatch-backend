@@ -35,9 +35,23 @@ export class RegistradoresController {
     return this.registradoresService.findAll();
   }
 
+  // OJO: esta ruta va ANTES de @Get(':id'). Si estuviera después, Nest
+  // intentaría matchear "eliminados" como un :id y el ParseIntPipe daría 400.
+  @Get('eliminados')
+  @Roles('admin')
+  findEliminados() {
+    return this.registradoresService.findEliminados();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.registradoresService.findOne(id);
+  }
+
+  @Patch(':id/restaurar')
+  @Roles('admin')
+  restaurar(@Param('id', ParseIntPipe) id: number) {
+    return this.registradoresService.restaurar(id);
   }
 
   @Patch(':id')

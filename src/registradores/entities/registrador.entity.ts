@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, JoinColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, JoinColumn } from "typeorm";
 import { ConfigRegistrador } from "../../config-registrador/entities/config-registrador.entity";
 import { Lectura } from "../../lecturas/entities/lectura.entity";
 import { TituloPanel } from "../../titulos-paneles/entities/titulo-panel.entity";
@@ -54,6 +54,12 @@ export class Registrador {
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
+
+    // Soft delete: NULL = vivo, con fecha = eliminado. Con este decorador,
+    // TypeORM excluye automáticamente los eliminados de todos los find()
+    // y softRemove() setea la fecha en vez de borrar la fila.
+    @DeleteDateColumn({ name: 'deleted_at' })
+    deletedAt: Date | null;
 
 
     @OneToMany(
