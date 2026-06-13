@@ -12,6 +12,7 @@ Trabajo Práctico final de **Desarrollo Web Full Stack** — desarrollado por **
 | **API** (este repo) | [https://relaywatch-backend.onrender.com](https://relaywatch-backend.onrender.com) en **Render** |
 | **API Docs (Swagger)** | **[https://relaywatch-backend.onrender.com/api](https://relaywatch-backend.onrender.com/api)** |
 | **Base de datos** | MySQL en **filess.io** |
+| **Landing** | [https://santysnk.github.io/relaywatch-frontend/](https://santysnk.github.io/relaywatch-frontend/) en **GitHub Pages** |
 
 Usuario de prueba: `admin@relaywatch.com` / `12345678`.
 
