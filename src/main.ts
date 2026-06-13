@@ -1,7 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { setDefaultResultOrder } from 'node:dns';
+import { setDefaultAutoSelectFamily } from 'node:net';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';   // ← NUEVO
+
+// La base (filess.io) resuelve a IPv4 e IPv6, pero la red de Render no alcanza
+// el IPv6 (ENETUNREACH) y eso causaba timeouts transitorios al conectar.
+// Forzamos resolución IPv4 primero y desactivamos el "Happy Eyeballs" para que
+// Node no pierda tiempo intentando el IPv6.
+setDefaultResultOrder('ipv4first');
+setDefaultAutoSelectFamily(false);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

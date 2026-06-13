@@ -37,6 +37,7 @@ import { AuthModule } from './auth/auth.module';
         // Un pool chico evita el error "too many connections" al arrancar.
         extra: {
           connectionLimit: 3,
+          connectTimeout: 30000, // más margen para la conexión inicial a la base remota
         },
       }),
     }),
