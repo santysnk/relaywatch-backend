@@ -131,7 +131,8 @@ CREATE TABLE config_registrador (
 -- -----------------------------------------------------
 -- 7. LECTURAS  (histórico de mediciones)
 --    Una fila por (registrador, parámetro, created_at).
---    El backend ejecuta una limpieza periódica (>7 días).
+--    La limpieza de lecturas viejas la hace un EVENT de MySQL (ver el final
+--    de este archivo), no el backend.
 -- -----------------------------------------------------
 CREATE TABLE lecturas (
   id              BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -188,3 +189,20 @@ INSERT INTO parametros (nombre, unidad, indice_parametro) VALUES
 INSERT INTO usuarios (nombre, apellido, email, password_hash, rol) VALUES
   ('Admin', 'Principal', 'admin@relaywatch.com',
    '$2b$10$fOFWQx5.gRkiu7j86mxu0OQ3aaYZhV5AlOD2I.EopY5lc8dMICFda', 'admin');
+
+
+-- =====================================================
+-- MANTENIMIENTO — Limpieza automática de lecturas
+-- =====================================================
+-- En el tier free de la base (filess.io) el espacio es limitado, así que un
+-- EVENT de MySQL borra cada hora las lecturas de más de 3 días. Corre DENTRO
+-- de la base, independiente del backend (sigue limpiando aunque el backend
+-- esté dormido en Render free).
+--
+-- En un entorno con base paga esto NO se usaría: se conserva el histórico
+-- completo (a futuro, "downsampling" de los datos viejos, p. ej. de 1 min a
+-- 15 min). Requiere el event scheduler activo (en filess.io ya viene ON).
+CREATE EVENT IF NOT EXISTS limpiar_lecturas_viejas
+  ON SCHEDULE EVERY 1 HOUR
+  DO
+    DELETE FROM lecturas WHERE created_at < (NOW() - INTERVAL 3 DAY);

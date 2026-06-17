@@ -1,7 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThan, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Lectura } from './entities/lectura.entity';
 
 @Injectable()
@@ -10,25 +9,6 @@ export class LecturasService {
     @InjectRepository(Lectura)
     private readonly lecturasRepo: Repository<Lectura>,
   ) {}
-
-  private readonly logger = new Logger(LecturasService.name);
-
-  // Lecturas más viejas que estos días se borran solas, para que la base
-  // (sobre todo en la nube) no crezca sin control mientras el cron del
-  // orquestador sigue generando mediciones.
-  private readonly DIAS_RETENCION = 3;
-
-  // Cada hora (mientras el backend esté despierto) borra las lecturas viejas.
-  @Cron(CronExpression.EVERY_HOUR)
-  async limpiarLecturasViejas(): Promise<void> {
-    const corte = new Date(Date.now() - this.DIAS_RETENCION * 24 * 60 * 60 * 1000);
-    const res = await this.lecturasRepo.delete({ createdAt: LessThan(corte) });
-    if (res.affected) {
-      this.logger.log(
-        `Limpieza: ${res.affected} lecturas de más de ${this.DIAS_RETENCION} días borradas.`,
-      );
-    }
-  }
 
   //Crea una o mas lecturas en una sola operacion.
   //Se llama desde el OrquestadorLecturasService cada N Segundos.
