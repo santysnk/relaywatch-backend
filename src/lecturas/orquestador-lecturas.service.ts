@@ -48,6 +48,7 @@ export class OrquestadorLecturasService {
 
     private async procesarRegistrador(registrador: Registrador): Promise<void> {
         const valoresCrudos = await this.simulador.generarValores({
+            id: registrador.id,
             ip: registrador.ip,
             puerto: registrador.puerto,
             indiceInicial: registrador.indiceInicial,
