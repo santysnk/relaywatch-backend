@@ -30,25 +30,29 @@ export class LecturasService {
   }
 
   // Trae la última medición de CADA parámetro de un registrador.
-  // (el último "batch" que insertó el orquestador)
+  // Tomamos la lectura más reciente POR parámetro (en vez de filtrar por un
+  // created_at exacto). Así, aunque un batch se haya guardado "partido" entre
+  // dos segundos —algo común cuando la base está en la nube y la inserción es
+  // más lenta—, ningún parámetro queda sin valor (no más cajas en "--,--").
   async findUltimasPorRegistrador(idRegistrador: number): Promise<Lectura[]> {
-    // 1. Buscar la fila más reciente de ese registrador (para saber el created_at)
-    const ultima = await this.lecturasRepo.findOne({
+    // Traemos las lecturas más recientes del registrador (varios ciclos) y nos
+    // quedamos con la primera —la más nueva— de cada parámetro.
+    const recientes = await this.lecturasRepo.find({
       where: { idRegistrador },
-      order: { createdAt: 'DESC' },
+      relations: ['parametro'],
+      order: { createdAt: 'DESC', id: 'DESC' },
+      take: 100, // con ~6 parámetros por registrador, cubre muchos ciclos
     });
 
-    // 2. Si nunca se midió, devolver array vacío
-    if (!ultima) {
-      return [];
+    const ultimaPorParametro = new Map<number, Lectura>();
+    for (const lectura of recientes) {
+      if (!ultimaPorParametro.has(lectura.idParametro)) {
+        ultimaPorParametro.set(lectura.idParametro, lectura);
+      }
     }
 
-    // 3. Traer TODAS las filas de ese registrador con ese mismo created_at
-    //    (las 6 del último batch), con el nombre/unidad del parámetro
-    return this.lecturasRepo.find({
-      where: { idRegistrador, createdAt: ultima.createdAt },
-      relations: ['parametro'],
-      order: { idParametro: 'ASC' },
-    });
+    return [...ultimaPorParametro.values()].sort(
+      (a, b) => a.idParametro - b.idParametro,
+    );
   }
 }
